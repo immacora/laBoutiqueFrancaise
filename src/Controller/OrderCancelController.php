@@ -24,12 +24,10 @@ class OrderCancelController extends AbstractController
     {
         $order = $this->entityManager->getRepository(Order::class)->findOneBy(['stripeSessionId' => $stripeSessionId]);
 
-        //si order vide ou user d'order différent de l'user actuel : home
         if (!$order || $order->getUser() != $this->getUser()){
             return $this->redirectToRoute('home');
         }
 
-        //envoyer un mail au user pour echec paiement
         return $this->render('order_cancel/index.html.twig', [
             'order' => $order
         ]);

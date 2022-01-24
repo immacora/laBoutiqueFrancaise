@@ -22,8 +22,6 @@ class Cart
     {
         $cart = $this->session->get('cart', []);
 
-        //Si l'id est déjà inséré, on ajoute ++ à la qté (1)
-        //sinon, on lui donne la valeur 1
         if(!empty($cart[$id])){
             $cart[$id]++;
         } else{

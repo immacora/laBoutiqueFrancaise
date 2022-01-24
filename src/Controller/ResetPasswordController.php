@@ -32,13 +32,11 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        //si requête (passée en injection) a 1 email
         if ($request->get('email')) 
         {
             $user = $this->entityManager->getRepository(User::class)->findOneByEmail($request->get('email'));
-            //si cet user existe en bdd, refaire le pwd
+
             if ($user) {
-                // 1 : Enregistrer en base la demande de reset_password avec user, token, createdAt.
                 $reset_password = new ResetPassword();
                 $reset_password->setUser($user);
                 $reset_password->setToken(uniqid());
@@ -46,7 +44,6 @@ class ResetPasswordController extends AbstractController
                 $this->entityManager->persist($reset_password);
                 $this->entityManager->flush();
 
-                // 2 : Envoyer un email à l'utilisateur avec un lien lui permettant de mettre à jour son mot de passe.
                 $url = $this->generateUrl('update_password', [
                     'token' => $reset_password->getToken()
                 ]);
@@ -77,28 +74,23 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('reset_password');
         }
 
-        // Vérifier si le token a expiré (sinon renouveler)
         $now = new \DateTime();
         if ($now > $reset_password->getCreatedAt()->modify('+ 3 hour')) {
             $this->addFlash('notice', 'Votre demande de mot de passe a expiré. Merci de la renouveller.');
             return $this->redirectToRoute('reset_password');
         }
 
-        // Rendre une vue avec mot de passe et confirmez votre mot de passe.
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $new_pwd = $form->get('new_password')->getData();
 
-            // Encodage des mots de passe
             $password = $encoder->hashPassword($reset_password->getUser(), $new_pwd);
             $reset_password->getUser()->setPassword($password);
 
-            // Flush en base de donnée.
             $this->entityManager->flush();
 
-            // Redirection de l'utilisateur vers la page de connexion.
             $this->addFlash('notice', 'Votre mot de passe a bien été mis à jour.');
             return $this->redirectToRoute('app_login');
         }

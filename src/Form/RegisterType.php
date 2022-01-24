@@ -20,7 +20,6 @@ class RegisterType extends AbstractType
         $builder
             ->add('firstname', TextType::class, [
                 'label'=> 'Votre prénom',
-                //longueur(min,max) dans un tableau associatif
                 'constraints' => new Length([
                     'min' => 2,
                     'max' => 30
@@ -49,12 +48,10 @@ class RegisterType extends AbstractType
                     'placeholder' => 'Merci de saisir votre adresse email'
                 ]
             ])
-            //au lieu d'utiliser un PasswordType avec confirmation dans un second champ, on utilise la classe RepeatedType qui permet de générer 2 champs différents pour une même propriété et dont le contenu doit être identique
             ->add('password', RepeatedType::class, [
-                //propriété relative au RepeatedType (le passwordType est ici le sous type du RepeatedType) qui doivent être indiquées
                 'type'=> PasswordType::class,
                 'invalid_message' => 'Le mot de passe et la confirmation doivent être identiques',
-                'required' => true, //champ obligatoire
+                'required' => true,
                 'first_options'=> [
                     'label'=> 'Votre mot de passe',
                     'attr'=> [

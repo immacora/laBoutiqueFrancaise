@@ -13,9 +13,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SearchType extends AbstractType
 {
-
-    //	Appeler la fonction Symfony buildForm () pour construire le formulaire et le remplir selon besoin : Ajouter la propriété string qui va représenter la recherche texte des utilisateurs (saisie dans l’input), son type et un tableau d’option
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -43,19 +40,15 @@ class SearchType extends AbstractType
         ;
     }
 
-    // Appeler  une fonction permettant de configurer des options : copier la fonction configureOptions() générée par Symfony dans RegisterType et la coller en remplaçant la classe user par la search
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Search::class,
-            // spécifier la méthode GET pour que les données du formulaire transitent par l’URL ce qui permet de copier-coller et partager l’URL cliquable, configurée avec les bons filtres. 
             'method' => 'GET',
-            // Désactiver le cripting de Symfony car non nécessaire sur un formulaire de recherche (pas de données sensibles)
             'crsf_protection' => false,
         ]);
     }
 
-    // Appeler la fonction Symfony getBlockPrefix() qui retourne un tableau de valeur préfixé du nom de la classe SearchType et l’initialiser à vide pour ne pas intégrer ces valeurs dans l’URL
     public function getBlockPrefix()
     {
         return '';

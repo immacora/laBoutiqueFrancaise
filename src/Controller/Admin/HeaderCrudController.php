@@ -27,7 +27,6 @@ class HeaderCrudController extends AbstractCrudController
             ->setUploadDir('public/uploads/')
             ->setUploadedFileNamePattern('[randomhash].[extension]')
             ->setRequired(false)
-			/*ImageField::new('illustration')->setBasePath('uploads/')->setFormTypeOptions(['mapped' => false, 'required' => false]),*/
         ];
     }
     

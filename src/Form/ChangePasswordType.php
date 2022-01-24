@@ -17,9 +17,7 @@ class ChangePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //configuration du formulaire (sur le modèle du Form RegisterType)
         $builder
-            /* renseigner le type + tableau d'options : activer la clé disabled du tableau à true pour empêcher la saisie (champ gris)*/
             ->add('email', EmailType::class, [
                 'disabled'=> true,
                 'label'=> 'Mon adresse email'
@@ -32,7 +30,6 @@ class ChangePasswordType extends AbstractType
                 'disabled'=> true,
                 'label'=> 'Mon nom'
             ])
-            //ajout placeholder dans le mot de passe : remplace la valeur du mdp
             ->add('old_password', PasswordType::class, [
                 'label'=> 'Mon mot de passe actuel',
                 'mapped' => false,

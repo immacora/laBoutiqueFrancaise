@@ -6,8 +6,6 @@ body {
     color: #fff;
 }
 
-/* footer collé en bas avec absolute
-(ne marche que si le body est en position: relative) sans bottom 0*/
 .footer-custom {
     text-align: center;
     position: absolute;

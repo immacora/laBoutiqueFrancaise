@@ -87,7 +87,6 @@ class AccountAddressController extends AbstractController
     {
         $address = $this->entityManager->getRepository(Address::class)->findOneBy(['id' => $id]);
         
-        //si l'adresse existe et que c'est la mienne, supprimer
         if ($address && $address->getUser() == $this->getUser()) {
             $this->entityManager->remove($address);
             $this->entityManager->flush();

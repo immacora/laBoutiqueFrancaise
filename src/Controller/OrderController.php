@@ -26,7 +26,6 @@ class OrderController extends AbstractController
      */
     public function index(Cart $cart, Request $request): Response
     {
-        //si pas d'adresses (avec getValues pour récupérer les data) = afficher, sinon redir vers création adresse
         if (!$this->getUser()->getAddresses()->getValues())
         {
             return $this->redirectToRoute('account_address_add');
@@ -56,7 +55,6 @@ class OrderController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()){
 
-            //initialiser les var cde ici
             $date = new \DateTime();
             $carriers = $form->get('carriers')->getData();
             $delivery = $form->get('addresses')->getData();
@@ -71,7 +69,6 @@ class OrderController extends AbstractController
             $delivery_content .= '<br/>'.$delivery->getPostal().' '.$delivery->getCity();
             $delivery_content .= '<br/>'.$delivery->getCountry();
 
-            //enregistrer  ma commande Order()
             $order = new Order();
             $reference = $date->format('dmY').'-'.uniqid();
             $order->setReference($reference);
@@ -84,9 +81,7 @@ class OrderController extends AbstractController
 
             $this->entityManager->persist($order);
 
-            //enregistrer  mes produits OrderDetails()
             foreach($cart->getFull() as $product){
-                //on déclare à chaque tour 
                 $orderDetails = new OrderDetails();
                 $orderDetails->setMyOrder($order);
                 $orderDetails->setProduct($product['product']->getName());

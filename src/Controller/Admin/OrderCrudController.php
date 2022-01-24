@@ -24,7 +24,6 @@ class OrderCrudController extends AbstractCrudController
 
     private $entityManager;
 
-    //permet de manager l'url de redirection après le traitement de la méthode updatePreparation
     private $crudUrlGenerator;
     
     public function __construct(EntityManagerInterface $entityManager, CrudUrlGenerator $crudUrlGenerator)
@@ -44,21 +43,17 @@ class OrderCrudController extends AbstractCrudController
         $updateDelivery = Action::new('updateDelivery', 'Livraison en cours', 'fas fa-truck')->linkToCrudAction('updateDelivery');
 
         return $actions
-        // spécifier la route dans laquelle mettre l'action detail, puis le nom de l'action
             ->add('index', 'detail')
-        // faire, sur la page détail, l'action codée dans $updatePreparation
             ->add('detail', $updatePreparation)
             ->add('detail', $updateDelivery);
     }
-
-    //setter la valeur 2 : préparation de commande en cours 
+ 
     public function updatePreparation(AdminContext $context) 
     {
         $order = $context->getEntity()->getInstance();
         $order->setState(2);
         $this->entityManager->flush();
 
-        //message affiche à l'user que la maj s'est bien passée
         $this->addFlash('notice', "<span style='color:green;'><strong>La commande ".$order->getReference()." est bien <u>en cours de préparation</u>.</strong></span>");
 
         $url = $this->crudUrlGenerator->build()
@@ -66,22 +61,20 @@ class OrderCrudController extends AbstractCrudController
             ->setAction('index')
             ->generateUrl();
 
-        /*Mettre les mails ici:
+        /* mails :
         $mail = new Mail();
         $mail->send($order->getUser())...
         */
 
         return $this->redirect($url);
     }
-
-    //setter la valeur 3 : Livraison en cours 
+ 
     public function updateDelivery(AdminContext $context) 
     {
         $order = $context->getEntity()->getInstance();
         $order->setState(3);
         $this->entityManager->flush();
 
-        //message affiche à l'user que la maj s'est bien passée
         $this->addFlash('notice', "<span style='color:orange;'><strong>La commande ".$order->getReference()." est bien <u>en cours de livraison</u>.</strong></span>");
 
         $url = $this->crudUrlGenerator->build()
@@ -94,7 +87,6 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        //trier par + récent
         return $crud->setDefaultSort(['id' => 'DESC']);
     }
 
@@ -118,17 +110,3 @@ class OrderCrudController extends AbstractCrudController
         ];
     }
 }
-/*
-{% set formHtml %}
-                {{ form_start(form, {action:path('order_recap')}) }}
-                    {{ form_label(form.addresses, 'Choisissez votre adresse de livraison') }}
-                {{ form_end(form) }}
-{% endset %}
-///
-            {{ delivery|raw }}<br/>
-            
-            
-            TextEditorField::new('{{ delivery|raw }}', 'Adresse de livraison')->onlyOnDetail(),
-            TextEditorField::new(('delivery'|raw), 'Adresse de livraison')->onlyOnDetail(),
-            
-            */

@@ -25,22 +25,17 @@ class OrderSuccessController extends AbstractController
     public function index(Cart $cart, $stripeSessionId): Response
     {
         $order = $this->entityManager->getRepository(Order::class)->findOneBy(['stripeSessionId' => $stripeSessionId]);
-        //si order vide ou user d'order différent de l'user actuel : home
         if (!$order || $order->getUser() != $this->getUser()){
             return $this->redirectToRoute('home');
         }
 
-        // si getState est à 0, le setter à 1 et flush
         if($order->getState() == 0){
 
-            // Vider la session cart
             $cart->remove();
 
-            // Passer le statut de vide à 1 (booléen)
             $order->setState(1);
             $this->entityManager->flush();
 			
-			// Envoyer un email à notre client pour lui confirmer sa commande
             $mail = new Mail();
             $content = "Bonjour ".$order->getUser()->getFirstname()."<br/>Merci pour votre commande.<br><br/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam expedita fugiat ipsa magnam mollitia optio voluptas! Alias, aliquid dicta ducimus exercitationem facilis, incidunt magni, minus natus nihil odio quos sunt?";
             $mail->send($order->getUser()->getEmail(), $order->getUser()->getFirstname(), 'Votre commande La Boutique Française est bien validée.', $content);

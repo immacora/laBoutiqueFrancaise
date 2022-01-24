@@ -22,7 +22,6 @@ class AccountOrderController extends AbstractController
      */
     public function index(): Response
     {
-        //afficher uniquement les commandes payées + dans l'ordre décroissant
         $orders = $this->entityManager->getRepository(Order::class)->findSuccessOrders($this->getUser());
 
         return $this->render('account/order.html.twig', [
@@ -35,10 +34,8 @@ class AccountOrderController extends AbstractController
      */
     public function show($reference): Response
     {
-        //afficher uniquement les commandes payées + dans l'ordre décroissant
         $order = $this->entityManager->getRepository(Order::class)->findOneBy(['reference' => $reference]);
 
-        //si différent de commande ou user, redir
         if (!$order || $order->getUser() != $this->getUser()) {
             return $this->redirectToRoute('account_order');
         }
