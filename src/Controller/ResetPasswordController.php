@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ResetPasswordController extends AbstractController
@@ -46,13 +46,15 @@ class ResetPasswordController extends AbstractController
 
                 $url = $this->generateUrl('update_password', [
                     'token' => $reset_password->getToken()
-                ]);
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+                );
 
-                $content = "Bonjour ".$user->getFirstname()."<br/>Vous avez demandé à réinitialiser votre mot de passe sur le site La Boutique Française.<br/><br/>";
-                $content .= "Merci de bien vouloir cliquer sur le lien suivant pour <a href='".$url."'>mettre à jour votre mot de passe</a>.";
+                $content = "Bonjour ".$user->getFirstname()."<br>Vous avez demandé à réinitialiser votre mot de passe sur le site La Boutique Française.<br><br>";
+                $content .= 'Merci de cliquer sur le lien suivant pour <a href="' . $url . '">mettre à jour votre mot de passe</a>';
 
-                /*$mail = new Mail();
-                $mail->send($user->getEmail(), $user->getFirstname().' '.$user->getLastname(), 'Réinitialiser votre mot de passe sur La Boutique Française', $content);*/
+                $mail = new Mail();
+                $mail->send($user->getEmail(), $user->getFirstname().' '.$user->getLastname(), 'Réinitialiser votre mot de passe sur La Boutique Française', $content);
 
                 $this->addFlash('notice', 'Vous allez recevoir dans quelques secondes un mail avec la procédure pour réinitialiser votre mot de passe.');
             } else {
@@ -61,7 +63,6 @@ class ResetPasswordController extends AbstractController
         }
         return $this->render('reset_password/index.html.twig');
     }
-
 
     /**
      * @Route("/modifier-mon-mot-de-passe/{token}", name="update_password")

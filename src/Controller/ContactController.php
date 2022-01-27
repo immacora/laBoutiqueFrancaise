@@ -20,11 +20,6 @@ class ContactController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->addFlash('notice', 'Merci de nous avoir contacté. Notre équipe va vous répondre dans les meilleurs délais.');
-
-            //pour envoi de mail à l'admin (cf autres parties):
-            /*$mail = new Mail();
-            $mail->send('', 'La Boutique Française', 'Vous avez reçu un message de xxxx');
-            test de récup des données avec:  dd($form->getData());*/
         }
 
         return $this->render('contact/index.html.twig', [

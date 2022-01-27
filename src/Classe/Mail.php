@@ -7,8 +7,8 @@ use Mailjet\Client;
 
 class Mail
 {
-    private $api_key = '';
-    private $api_key_secret = '';
+    private $api_key = '3792aaa8463d55d59ec063eb183ecd46';
+    private $api_key_secret = '12724e4bebcbab97d87f1c37a060c4b7';
 
     public function send($to_email, $to_name, $subject, $content) 
     {
@@ -26,8 +26,8 @@ class Mail
                             'Email' => $to_email,
                             'Name' => $to_name
                         ]
-                    ],
-                    'TemplateID' => 1,
+                    ], 
+                    'TemplateID' => 3525702,
                     'TemplateLanguage' => true,
                     'Subject' => $subject,
                     'Variables' => [
@@ -37,7 +37,7 @@ class Mail
             ]
         ];
         $response = $mj->post(Resources::$Email, ['body' => $body]);
-        $response->success() && dd($response->getData());
+        $response->success();
     }
 
 }
