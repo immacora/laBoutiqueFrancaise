@@ -15,13 +15,14 @@
           <th scope="col">Produit</th>
           <th scope="col"></th>
           <th scope="col">Quantité</th>
-          <th scope="col">Prix</th>
+          <th scope="col">Prix Unitaire</th>
           <th scope="col">Total</th>
           <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
       {% set total = null %}
+	  {% set nb_produit = null %}
       {% for product in cart %}
         <tr>
           <th>
@@ -49,13 +50,14 @@
           </td>
         </tr>
         {% set total = total + (product.product.price * product.quantity) %}
+		{% set nb_produit = nb_produit + product.quantity %}
       {% endfor %}
       </tbody>
     </table>
 
     <div class="text-right mb-5">
-      <b>Nombre de produits : </b>{{ cart|length }}<br/>
-      <b>Total de mon panier : </b>{{ (total / 100)|number_format(2, ',', '.') }}€
+      <b>Nombre de produits : </b>{{ nb_produit }}<br/>
+      <b>Total du panier : </b>{{ (total / 100)|number_format(2, ',', '.') }}€
       <a href="{{ path('order') }}" class="btn btn-success btn-block mt-3">Valider mon panier</a>
     </div>
 
