@@ -32,14 +32,13 @@ class OrderSuccessController extends AbstractController
         if($order->getState() == 0){
 
             $cart->remove();
-
             $order->setState(1);
             $this->entityManager->flush();
 			
             $mail = new Mail();
-            $content = "Bonjour ".$order->getUser()->getFirstname()."<br/>Merci pour votre commande.<br><br/>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam expedita fugiat ipsa magnam mollitia optio voluptas! Alias, aliquid dicta ducimus exercitationem facilis, incidunt magni, minus natus nihil odio quos sunt?";
-            $mail->send($order->getUser()->getEmail(), $order->getUser()->getFirstname(), 'Votre commande La Boutique Française est bien validée.', $content);
-            															  
+            $username = $order->getUser()->getFirstname().' '.$order->getUser()->getLastname();
+            $content = "Merci pour votre commande n° ".$order->getReference(). ".<br><br/>Elle sera traitée dans les meilleurs délais";
+            $mail->send($order->getUser()->getEmail(), $username, 'Votre commande sur La Boutique Française', $content, $username);            													
         }
 
         return $this->render('order_success/index.html.twig', [
