@@ -17,19 +17,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class OrderCrudController extends AbstractCrudController
 {
-
     private $entityManager;
-
-    private $crudUrlGenerator;
+    private $adminUrlGenerator;
     
-    public function __construct(EntityManagerInterface $entityManager, CrudUrlGenerator $crudUrlGenerator)
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->entityManager = $entityManager;
-        $this->crudUrlGenerator = $crudUrlGenerator;
+        $this->adminUrlGenerator = $adminUrlGenerator;
     }
     
     public static function getEntityFqcn(): string
@@ -56,17 +54,13 @@ class OrderCrudController extends AbstractCrudController
 
         $this->addFlash('notice', "<span style='color:green;'><strong>La commande ".$order->getReference()." est bien <u>en cours de préparation</u>.</strong></span>");
 
-        $url = $this->crudUrlGenerator->build()
+        $routeBuilder = $this->get(AdminUrlGenerator::class);
+
+        return $this->redirect($routeBuilder
             ->setController(OrderCrudController::class)
             ->setAction('index')
-            ->generateUrl();
+            ->generateUrl());    
 
-        /* mails :
-        $mail = new Mail();
-        $mail->send($order->getUser())...
-        */
-
-        return $this->redirect($url);
     }
  
     public function updateDelivery(AdminContext $context) 
@@ -77,12 +71,12 @@ class OrderCrudController extends AbstractCrudController
 
         $this->addFlash('notice', "<span style='color:orange;'><strong>La commande ".$order->getReference()." est bien <u>en cours de livraison</u>.</strong></span>");
 
-        $url = $this->crudUrlGenerator->build()
+        $routeBuilder = $this->get(AdminUrlGenerator::class);
+
+        return $this->redirect($routeBuilder
             ->setController(OrderCrudController::class)
             ->setAction('index')
-            ->generateUrl();
-
-        return $this->redirect($url);
+            ->generateUrl());
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -100,7 +94,7 @@ class OrderCrudController extends AbstractCrudController
             MoneyField::new('total', 'Total produit')->setCurrency('EUR'),
             TextField::new('carrierName', 'Transporteur'),
             MoneyField::new('carrierPrice', 'Frais de port')->setCurrency('EUR'),
-            ChoiceField::new('state')->setChoices([
+            ChoiceField::new('state', 'Statut')->setChoices([
                 'Non payée' => 0,
                 'Payée' => 1,
                 'Préparation en cours' => 2,
