@@ -21,13 +21,13 @@ class ContactController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+            $username = $user['prenom'].' '.$user['nom'];
+
             $this->addFlash('notice', 'Merci de nous avoir contacté. Notre équipe va vous répondre dans les meilleurs délais.');
         
-            $mailUser = new Mail();
-            $mailAdmin = new Mail();
-            $content = "Bonjour ".$user['prenom'].' '.$user['nom']."<br/>Vous avez envoyé le message suivant à La Boutique Française:<br/><br/>" .$user['content']."<br/><br/>Nous vous répondrons dans les plus brefs délais<br/>à l'adresse mail suivante: ".$user['email'] ;
-            $mailAdmin->send('contact.laboutiquefrancaise@immacora.com', 'La Boutique Française', "Vous avez reçu un message de La Boutique Française", "Vous avez reçu le message suivant de La Boutique Française:<br/><br/>". $content);
-            $mailUser->send($user['email'], $user['prenom'], 'Votre message à La Boutique Française', $content);
+            $mail = new Mail();
+            $content = "Vous avez envoyé le message suivant à La Boutique Française:<br/><br/>" .$user['content']."<br/><br/>Nous vous répondrons dans les plus brefs délais<br/>à l'adresse mail suivante: ".$user['email'] ;
+            $mail->send($user['email'], $username, 'Votre message à La Boutique Française', $content, $username);
         }
 
         return $this->render('contact/index.html.twig', [
